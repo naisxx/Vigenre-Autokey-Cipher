@@ -7,12 +7,20 @@ include Irvine32.inc
 	maxLength		 = 100
 	plainText		 BYTE maxLength DUP(?)
 	keyword			 BYTE maxLength DUP(?)
+	cipherText		 BYTE maxLength DUP(?)
+
+	keyword_index	 DWORD 0     ; variable to hold index of current keyword letter
 
 	debugPlainTextMsg   BYTE "[DEBUG] Uppercase Plaintext: ", 0
     debugKeywordMsg     BYTE "[DEBUG] Uppercase Keyword: ", 0
 
 .code
 main PROC
+	; Initial values
+	mov al, 0
+	mov [ciphertext], al     ; Put null terminator at start of ciphertext
+	mov keyword_index, 0
+
 	; Reading PlainText
 	mov edx, OFFSET promptPlainText
 	call WriteString
@@ -73,6 +81,7 @@ main PROC
 
 	doneConvert:
 
+	; For DEBUG puposes, must remove this
 	printDebug:
     call Crlf
     mov edx, OFFSET debugPlainTextMsg
