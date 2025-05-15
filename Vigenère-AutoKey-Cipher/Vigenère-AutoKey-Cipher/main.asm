@@ -10,6 +10,7 @@ include Irvine32.inc
 	cipherText		 BYTE maxLength DUP(?)
 
 	keyword_index	 DWORD 0     ; variable to hold index of current keyword letter
+	keyword_length	 DWORD ?     ; we will compute this
 
 	debugPlainTextMsg   BYTE "[DEBUG] Uppercase Plaintext: ", 0
     debugKeywordMsg     BYTE "[DEBUG] Uppercase Keyword: ", 0
@@ -36,6 +37,11 @@ main PROC
 	mov edx, OFFSET keyword
 	mov ecx, maxLength
 	call ReadString
+
+	; Reading keyword length and saving in memory for use
+	mov edx, OFFSET keyword
+	call Str_length
+	mov keyword_length, eax        ; store length in our variable
 
 	; Converting PLAINTEXT to uppercase
 	mov esi, OFFSET plainText
@@ -98,7 +104,11 @@ main PROC
     call WriteString
     call Crlf
 
-
+	; Initialize pointers
+    mov esi, OFFSET plaintext     ; ESI = current plaintext char
+    mov edi, OFFSET ciphertext    ; EDI = where to store next cipher char
+    mov ebx, 0                    ; EBX = keyword_index
+    mov ecx, keyword_length       ; ECX = keyword_length
 
 	exit
 main ENDP
